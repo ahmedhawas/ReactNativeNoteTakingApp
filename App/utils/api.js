@@ -14,14 +14,14 @@ var api = {
     var url = `https://api.github.com/users?since=${sinceUserID}`;
     return fetch(url).then((res) => res.json());
   },
-  getNotes(username) {
-    var username = username.toLowerCase().trim();
-    var url = `https://githubNoteTakerApplication.firebaseIO.com/${username}.json`;
-    return fetch(url).then((res) => res.json());
+  getNotes(username){
+    username = username.toLowerCase().trim();
+    var url = `https://native-gh-notetaker.firebaseio.com/${username}.json`;
+    return fetch(url).then((res) => res.json())
   },
-  addNote(username, note) {
-    var username = username.toLowerCase().trim();
-    var url = `https://githubNoteTakerApplication.firebaseIO.com/${username}.json`;
+  addNote(username, note){
+    username = username.toLowerCase().trim();
+    var url = `https://native-gh-notetaker.firebaseio.com/${username}.json`;
     return fetch(url, {
       method: 'post',
       body: JSON.stringify(note)

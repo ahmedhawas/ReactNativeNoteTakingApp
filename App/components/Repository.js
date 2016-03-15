@@ -67,7 +67,7 @@ class Repository extends React.Component{
     });
     return (
       <ScrollView style={styles.container}>
-        <Badge userInfo={this.props.userInfo} />
+        <Badge userInfo={this.props.userInfo} lat={this.props.lat} lng={this.props.lng} />
         {list}
       </ScrollView>
     )

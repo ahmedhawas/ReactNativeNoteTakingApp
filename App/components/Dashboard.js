@@ -1,7 +1,9 @@
 var React = require('react-native');
 var Profile = require('./Profile');
 import Repository from './Repository';
+var Notes = require('./Notes');
 import api from '../utils/api';
+var RNGeocoder = require('react-native-geocoder');
 
 var {
   Text,
@@ -27,6 +29,30 @@ var styles = StyleSheet.create({
 });
 
 class Dashboard extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      lat: '',
+      lng: ''
+    };
+  }
+
+  componentDidMount() {
+    RNGeocoder.geocodeAddress(this.props.userInfo.location, (err, data) => {
+      if (err) {
+        return;
+      }
+      let latitude = 42.3;
+      let longitude = -72.3;
+
+      if (data[0].position.lat !== '' && data[0].position.lng !== '') {
+        latitude = parseFloat(data[0].position.lat);
+        longitude = parseFloat(data[0].position.lng);
+      }
+      this.setState({lat: latitude , lng: longitude});
+    });
+  }
+
   _makeBackground(btn) {
     var obj = {
       flexDirection: 'row',
@@ -49,7 +75,7 @@ class Dashboard extends React.Component {
     this.props.navigator.push({
       component: Profile,
       title: 'Profile Page',
-      passProps: {userInfo: this.props.userInfo},
+      passProps: {userInfo: this.props.userInfo, lat: this.state.lat, lng: this.state.lng},
       backButtonTitle: 'back'
     })
   }
@@ -63,7 +89,9 @@ class Dashboard extends React.Component {
           title: 'Repositories',
           passProps: {
             userInfo: this.props.userInfo,
-            repos: res
+            repos: res,
+            lat: this.state.lat,
+            lng: this.state.lng
           },
           backButtonTitle: 'back'
         });
@@ -71,6 +99,20 @@ class Dashboard extends React.Component {
   }
 
   _goToNotes(){
+   api.getNotes(this.props.userInfo.login)
+     .then((jsonRes) => {
+       jsonRes = jsonRes || {};
+       this.props.navigator.push({
+         component: Notes,
+         title: 'Notes',
+         passProps: {
+           notes: jsonRes,
+           userInfo: this.props.userInfo,
+           lat: this.state.lat,
+           lng: this.state.lng
+         }
+       });
+     });
   }
 
   render(){
