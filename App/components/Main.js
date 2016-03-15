@@ -2,14 +2,18 @@
 var React = require('react-native');
 import api from '../utils/api';
 import Dashboard from './Dashboard';
+import Seperator from '../helpers/Seperator';
 
 var {
   View,
   Text,
   TextInput,
   TouchableHighlight,
-  ActivityInidicatorIOS,
-  StyleSheet
+  ActivityIndicatorIOS,
+  StyleSheet,
+  ScrollView,
+  MapView,
+  RefreshControl
 } = React;
 
 var styles = StyleSheet.create({
@@ -54,7 +58,23 @@ var styles = StyleSheet.create({
     alignSelf: 'stretch',
     justifyContent: 'center'
   },
+  rowContainer: {
+    padding: 10
+  },
+  rowTitle: {
+    color: '#48BBEC',
+    fontSize: 16
+  },
+  rowContent: {
+    fontSize: 19
+  },
+  container: {
+    marginTop: 0,
+    flex: 1
+  }
 });
+
+var PULLDOWN_DISTANCE = 40
 
 class Main extends React.Component{
   constructor(props) {
@@ -63,12 +83,62 @@ class Main extends React.Component{
       username: '',
       isLoading: false,
       error: false,
+      isRefreshing: false,
+      users: []
     };
+  }
+
+  componentDidMount() {
+    this._loadData();
+  }
+
+  _onRefresh() {
+    this.setState({isRefreshing: true});
+    this._loadData();
+  }
+
+  _loadData() {
+    api.getPopularUsers()
+    .then((res) => {
+      this.setState({users: res, isRefreshing: false});
+    });
   }
 
   _handleChange(event) {
     this.setState({
       username: event.nativeEvent.text
+    });
+  }
+
+  _handleScroll(e) {
+    if (e.nativeEvent.contentOffset.y < -PULLDOWN_DISTANCE) {
+      this.reloadData()
+    }
+    this.props.onScroll && this.props.onScroll(e)
+  }
+
+  _handleUserClick(username) {
+    this.setState({isLoading: true});
+    api.getBio(username)
+    .then((res) => {
+      if(res.message === 'Not Found'){
+        this.setState({
+          error: 'User not found',
+          isLoading: false
+        })
+      } else {
+        this.props.navigator.push({
+          title: res.name || "Select an Option",
+          component: Dashboard,
+          passProps: {userInfo: res},
+          backButtonTitle: 'back'
+        });
+        this.setState({
+          isLoading: false,
+          error: false,
+          username: ''
+        });
+      }
     });
   }
 
@@ -85,7 +155,8 @@ class Main extends React.Component{
           this.props.navigator.push({
             title: res.name || "Select an Option",
             component: Dashboard,
-            passProps: {userInfo: res}
+            passProps: {userInfo: res},
+            backButtonTitle: 'back'
           });
           this.setState({
             isLoading: false,
@@ -97,9 +168,26 @@ class Main extends React.Component{
   }
 
   render() {
+    var showError = (
+       this.state.error ? <Text> {this.state.error} </Text> : <View></View>
+     );
+     var list = this.state.users.map((item, index) => {
+       return (
+         <View key={index}>
+           <View style={styles.rowContainer}>
+             <TouchableHighlight
+               onPress={this._handleUserClick.bind(this, item.login)}
+               underlayColor="#88D4F5">
+               <Text style={styles.rowContent}> {item.login} </Text>
+             </TouchableHighlight>
+           </View>
+           <Seperator />
+         </View>
+       );
+     });
     return(
       <View style={styles.mainContainer}>
-      <Text style={styles.title}> Search for a Github User </Text>
+      <Text style={styles.title}> Search for a Github User</Text>
       <TextInput
         style={styles.searchInput}
         value={this.state.username}
@@ -110,6 +198,26 @@ class Main extends React.Component{
           underlayColor="white">
           <Text style={styles.buttonText}> SEARCH </Text>
         </TouchableHighlight>
+        <ActivityIndicatorIOS
+         animating={this.state.isLoading}
+         color="#111"
+         size="large"></ActivityIndicatorIOS>
+        {showError}
+        <Text style={styles.title}>Random Github Users</Text>
+        <ScrollView
+          style={styles.container}
+          refreshControl={
+          <RefreshControl
+           refreshing={this.state.isRefreshing}
+           onRefresh={this._onRefresh.bind(this)}
+           tintColor="#ff0000"
+           title="Loading..."
+           colors={['#ff0000', '#00ff00', '#0000ff']}
+           progressBackgroundColor="#ffff00"
+         />}
+        >
+          {list}
+        </ScrollView>
       </View>
       )
   }

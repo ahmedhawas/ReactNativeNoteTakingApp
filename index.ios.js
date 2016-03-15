@@ -1,7 +1,6 @@
 import React from 'react-native';
 import Main from './App/components/Main';
 
-
 var {
   AppRegistry,
   StyleSheet,
@@ -23,7 +22,7 @@ class githubNotetaker extends React.Component{
       <NavigatorIOS
       style={styles.container}
         initialRoute={{
-          title: 'Github NoteTaker',
+          title: 'Github',
           component: Main
         }} />
     );
