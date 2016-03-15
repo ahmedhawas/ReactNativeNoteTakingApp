@@ -44,14 +44,25 @@ var styles = StyleSheet.create({
 
 class Badge extends React.Component{
   render(){
+    var markers = [
+      {
+        latitude: this.props.lat,
+        longitude: this.props.lng,
+        title: 'Location',
+        subtitle: this.props.userInfo.name
+      }
+    ];
     return (
       <View style={styles.container}>
         <MapView
           style={styles.map}
-          initialRegion={{
+          region={{
             latitude: this.props.lat,
-            longitude: this.props.lng
+            longitude: this.props.lng,
+            latitudeDelta: 0.7,
+            longitudeDelta: 0.7
           }}
+          annotations={markers}
         />
         <Image style={styles.image} source={{uri: this.props.userInfo.avatar_url}}/>
         <Text style={styles.name}> {this.props.userInfo.name} </Text>

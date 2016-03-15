@@ -33,8 +33,7 @@ class Login extends React.Component{
               onPress={this._goToMainView.bind(this)}
               underlayColor="#88D4F5">
               <View style={styles.signin}>
-                  <Image style={styles.loginImage} source={{uri: 'http://i.imgur.com/da4G0Io.png'}} />
-                  <Text style={styles.whiteFont}>Sign In With Github</Text>
+                  <Text style={styles.whiteFont}>Start Using Github Notetaker</Text>
               </View>
             </TouchableHighlight>
         </View>
