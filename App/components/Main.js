@@ -101,6 +101,7 @@ class Main extends React.Component{
     api.getPopularUsers()
     .then((res) => {
       this.setState({users: res, isRefreshing: false});
+      console.log('users', res);
     });
   }
 

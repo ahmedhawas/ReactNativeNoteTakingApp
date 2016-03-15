@@ -2,6 +2,7 @@
 var React = require('react-native');
 var Badge = require('./Badge');
 import Seperator from '../helpers/Seperator';
+var RNGeocoder = require('react-native-geocoder');
 
 
 var {
@@ -32,7 +33,24 @@ var styles = StyleSheet.create({
   }
 });
 
-class Profile extends React.Component{
+class Profile extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      lat: '',
+      lng: ''
+    };
+  }
+
+  componentDidMount() {
+    RNGeocoder.geocodeAddress(this.props.userInfo.location, (err, data) => {
+      if (err) {
+        return;
+      }
+      this.setState({lat: data[0].position.lat , lng: data[0].position.lng});
+    });
+  }
+
   getRowTitle(user, item){
     item = (item === 'public_repos') ? item.replace('_', ' ') : item;
     return item[0] ? item[0].toUpperCase() + item.slice(1) : item;
@@ -57,7 +75,7 @@ class Profile extends React.Component{
     });
     return (
       <ScrollView style={styles.container}>
-        <Badge userInfo={this.props.userInfo}/>
+        <Badge userInfo={this.props.userInfo} lat={this.state.lat} lng={this.state.lng}/>
         {list}
       </ScrollView>
     )

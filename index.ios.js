@@ -1,5 +1,5 @@
 import React from 'react-native';
-import Main from './App/components/Main';
+import Login from './App/components/Login'
 
 var {
   AppRegistry,
@@ -22,8 +22,8 @@ class githubNotetaker extends React.Component{
       <NavigatorIOS
       style={styles.container}
         initialRoute={{
-          title: 'Github',
-          component: Main
+          title: 'Github Notetaker',
+          component: Login
         }} />
     );
   }

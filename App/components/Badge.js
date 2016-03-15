@@ -1,16 +1,19 @@
 var React = require('react-native');
+var Dimensions = require('Dimensions');
+var windowSize = Dimensions.get('window');
 
 var {
   Text,
   View,
   Image,
+  MapView,
   StyleSheet
 } = React;
 
 var styles = StyleSheet.create({
   container: {
     backgroundColor: '#48BBEC',
-    paddingBottom: 10
+    // paddingBottom: 10
   },
   name: {
     alignSelf: 'center',
@@ -28,15 +31,28 @@ var styles = StyleSheet.create({
     height: 125,
     width: 125,
     borderRadius: 65,
-    marginTop: 10,
-    alignSelf: 'center'
-  }
+    left: windowSize.width / 2 - 65,
+    top: 80,
+    position: 'absolute'
+  },
+  map: {
+    height: 250,
+    borderWidth: 1,
+    borderColor: '#000000'
+  },
 });
 
 class Badge extends React.Component{
   render(){
     return (
       <View style={styles.container}>
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: this.props.lat,
+            longitude: this.props.lng
+          }}
+        />
         <Image style={styles.image} source={{uri: this.props.userInfo.avatar_url}}/>
         <Text style={styles.name}> {this.props.userInfo.name} </Text>
         <Text style={styles.handle}> {this.props.userInfo.login} </Text>

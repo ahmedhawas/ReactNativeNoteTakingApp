@@ -26,7 +26,7 @@ var styles = StyleSheet.create({
   }
 });
 
-class Dashboard extends React.Component{
+class Dashboard extends React.Component {
   _makeBackground(btn) {
     var obj = {
       flexDirection: 'row',
@@ -81,19 +81,19 @@ class Dashboard extends React.Component{
             style={this._makeBackground(0)}
             onPress={this._goToProfile.bind(this)}
             underlayColor="#88D4F5">
-            <Text style={styles.buttonText}> View Profile</Text>
+            <Text style={styles.buttonText}>Profile</Text>
           </TouchableHighlight>
           <TouchableHighlight
             style={this._makeBackground(1)}
             onPress={this._goToRepos.bind(this)}
             underlayColor="#88D4F5">
-            <Text style={styles.buttonText}> View Repos</Text>
+            <Text style={styles.buttonText}>Repos</Text>
           </TouchableHighlight>
           <TouchableHighlight
             style={this._makeBackground(2)}
             onPress={this._goToNotes.bind(this)}
             underlayColor="#88D4F5">
-            <Text style={styles.buttonText}> View Notes</Text>
+            <Text style={styles.buttonText}>Notes</Text>
           </TouchableHighlight>
         </View>
       )
