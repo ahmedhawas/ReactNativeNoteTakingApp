@@ -27,7 +27,7 @@ class Login extends React.Component{
         <View style={styles.container}>
             <Image style={styles.bg} source={{uri: 'http://i.imgur.com/xlQ56UK.jpg'}} />
             <View style={styles.header}>
-                <Image style={styles.mark} source={{uri: 'http://i.imgur.com/da4G0Io.png'}} />
+                <Image style={styles.mark} source={{uri: 'http://bwalshy.com/img/g.png'}} />
             </View>
             <TouchableHighlight
               onPress={this._goToMainView.bind(this)}
